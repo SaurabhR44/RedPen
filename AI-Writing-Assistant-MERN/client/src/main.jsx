@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <PrivyProvider
-      appId=""
+      appId={import.meta.env.VITE_PRIVY_APP_ID || ""}
       config={{
         // Display email and wallet as login methods
         loginMethods: ["email", "wallet", "google", "sms"],

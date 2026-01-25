@@ -23,7 +23,7 @@ const Editor = () => {
   const rephraseSentence = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/analyze",
+        "http://localhost:8000/api/analyze",
         {
           sentence: selectedSentence,
         },
@@ -46,7 +46,7 @@ const Editor = () => {
   const checkSpelling = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/spellcheck",
+        "http://localhost:8000/api/spellcheck",
         { text },
         {
           headers: {
@@ -63,7 +63,7 @@ const Editor = () => {
   const checkGrammar = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/grammarcheck",
+        "http://localhost:8000/api/grammarcheck",
         { text }
       );
       setGrammarCheckedText(response.data.correctedText);

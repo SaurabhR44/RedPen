@@ -6,7 +6,7 @@ const grammarCheck = require("./routes/grammarChecker");
 const spellChecker = require("./routes/spellChecker");
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 //config cors
 app.use(cors());

@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "client/dist",
+  "env": {
+    "VITE_PRIVY_APP_ID": "@privy_app_id"
+  },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}

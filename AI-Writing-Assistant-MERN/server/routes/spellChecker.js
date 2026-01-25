@@ -34,7 +34,7 @@ spellChecker.post("/", async (req, res) => {
     );
 
     const correctedText = response.data.choices[0].message.content.trim();
-    res.json(correctedText);
+    res.json({ correctedText });
   } catch (error) {
     console.error("Error checking grammar:", error);
     res.status(500).json({ error: error.message });
