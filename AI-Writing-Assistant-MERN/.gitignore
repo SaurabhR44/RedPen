@@ -35,6 +35,9 @@ logs/
 coverage/
 .nyc_output/
 
+# Database
+server/data/
+
 # Misc
 .next/
 out/

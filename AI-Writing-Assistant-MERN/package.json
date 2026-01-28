@@ -1,7 +1,7 @@
 {
   "name": "ai-writing-assistant",
   "version": "1.0.0",
-  "description": "AI Writing Assistant - A MERN application for writing improvement",
+  "description": "RedPen - A MERN application for writing improvement",
   "private": true,
   "scripts": {
     "install-all": "npm install && cd client && npm install && cd ../server && npm install",

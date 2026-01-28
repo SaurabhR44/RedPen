@@ -29,7 +29,7 @@ const Home = () => {
               <img
                 style={{ width: "70%", height: "auto" }}
                 src={ai}
-                alt="AI Writing"
+                alt="RedPen"
                 className="rounded-lg shadow-2xl"
               />
             </div>
@@ -65,8 +65,7 @@ const Home = () => {
 
       <footer className="bg-gray-800 text-white py-8 text-center">
         <p>
-          AI Writing Assistant ©{new Date().getFullYear()} | Powered by
-          Masynctech Coding School
+          RedPen ©{new Date().getFullYear()} | AI Writing Assistant
         </p>
       </footer>
     </div>

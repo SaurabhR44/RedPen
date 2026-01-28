@@ -7,12 +7,12 @@ const About = () => {
     <div className="container mx-auto px-4 py-12 bg-gray-100 min-h-screen">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">
-          About AI Writing Assistant
+          About RedPen
         </h1>
 
         <div className="bg-white shadow-lg rounded-lg p-8 mb-12">
           <p className="text-xl text-gray-700 mb-6">
-            AI Writing Assistant is a cutting-edge tool designed to elevate your
+            RedPen is a cutting-edge tool designed to elevate your
             writing experience. Powered by advanced artificial intelligence, our
             platform offers a suite of features to enhance your writing quality,
             boost your productivity, and unleash your creativity.
@@ -57,7 +57,7 @@ const About = () => {
           </h2>
           <p className="text-xl mb-6">
             Join thousands of satisfied users who have elevated their writing
-            with AI Writing Assistant.
+            with RedPen.
           </p>
           <Link
             to="/write"

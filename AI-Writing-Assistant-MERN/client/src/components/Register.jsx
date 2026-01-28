@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaSignInAlt, FaEnvelope, FaLock } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaUserPlus, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE } from "../config";
 import GoogleSignInButton from "./GoogleSignInButton";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setToken } = useAuth();
-  const from = location.state?.from?.pathname || "/write";
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function LoginPage() {
     try {
       const res = await axios.post(`${API_BASE}/api/auth/google`, { id_token: idToken });
       setToken(res.data.token, res.data.user);
-      navigate(from, { replace: true });
+      navigate("/write", { replace: true });
     } catch (err) {
       const msg = err.response?.data?.error || err.message || "Google sign-in failed.";
       setError(msg);
@@ -40,18 +40,27 @@ export default function LoginPage() {
       setError("Email and password are required.");
       return;
     }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE}/api/auth/login`, {
+      const res = await axios.post(`${API_BASE}/api/auth/register`, {
         email: email.trim(),
         password,
+        name: name.trim() || undefined,
       });
       setToken(res.data.token, res.data.user);
-      navigate(from, { replace: true });
+      navigate("/write", { replace: true });
     } catch (err) {
       const msg = err.response?.status === 404 || err.code === "ERR_NETWORK"
         ? "Backend not reached. Open a terminal, run: cd server && npm start (keep it running), then try again."
-        : (err.response?.data?.error || err.message || "Login failed.");
+        : (err.response?.data?.error || err.message || "Registration failed.");
       setError(msg);
     } finally {
       setLoading(false);
@@ -63,8 +72,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-slate-800">RedPen</h1>
-            <p className="text-slate-600 mt-1">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-slate-800">Create account</h1>
+            <p className="text-slate-600 mt-1">RedPen</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -73,6 +82,27 @@ export default function LoginPage() {
                 {error}
               </div>
             )}
+
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+                Name (optional)
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <FaUser />
+                </span>
+                <input
+                  id="name"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Your name"
+                  disabled={loading}
+                />
+              </div>
+            </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
@@ -97,7 +127,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
-                Password
+                Password (min 6 characters)
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -106,9 +136,30 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="••••••••"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-1">
+                Confirm password
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <FaLock />
+                </span>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   placeholder="••••••••"
                   disabled={loading}
@@ -119,14 +170,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition"
+              className="w-full bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition"
             >
               {loading ? (
                 <span className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
               ) : (
-                <FaSignInAlt />
+                <FaUserPlus />
               )}
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Creating account..." : "Create account"}
             </button>
 
             <div className="relative my-6">
@@ -148,9 +199,9 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-slate-600 text-sm">
-            Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-medium hover:underline">
-              Create one
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-600 font-medium hover:underline">
+              Sign in
             </Link>
           </p>
         </div>
