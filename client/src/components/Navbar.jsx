@@ -42,41 +42,15 @@ export default function Navbar() {
             {theme === 'light' ? <FaMoon /> : <FaSun />}
           </button>
 
-          {/* Desktop Auth Menu */}
+          {/* Direct Write Button */}
           <div className="hidden md:flex items-center gap-3">
-            {!loading && (
-              isAuthenticated ? (
-                <>
-                  <span className="text-sm text-blue-100 hidden sm:inline">
-                    {user?.name || user?.email}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition"
-                  >
-                    <FaSignOutAlt />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition"
-                  >
-                    <FaSignInAlt />
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 flex items-center gap-2 transition"
-                  >
-                    <FaUserPlus />
-                    Get started
-                  </Link>
-                </>
-              )
-            )}
+            <Link
+              to="/write"
+              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 flex items-center gap-2 transition"
+            >
+              <FaPencilAlt />
+              Start Writing
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,45 +69,7 @@ export default function Navbar() {
         <div className="md:hidden absolute top-full left-0 right-0 bg-blue-600 dark:bg-slate-900 border-t border-white/10 shadow-xl p-4 flex flex-col gap-4 animate-fadeIn">
           <Link to="/" className="hover:text-blue-100 dark:hover:text-slate-300 py-2" onClick={() => setMobileMenuOpen(false)}>Home</Link>
           <Link to="/about" className="hover:text-blue-100 dark:hover:text-slate-300 py-2" onClick={() => setMobileMenuOpen(false)}>About</Link>
-          {isAuthenticated && (
-            <Link to="/write" className="hover:text-blue-100 dark:hover:text-slate-300 py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>Write</Link>
-          )}
-          <div className="h-px bg-white/10 my-1"></div>
-          {!loading && (
-            isAuthenticated ? (
-              <>
-                <div className="text-sm text-blue-100 dark:text-slate-400 py-2 truncate">
-                  Signed in as {user?.email}
-                </div>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 py-2 px-4 rounded-lg transition text-sm font-medium w-full justify-center"
-                >
-                  <FaSignOutAlt /> Sign out
-                </button>
-              </>
-            ) : (
-              <div className="flex flex-col gap-3">
-                <Link
-                  to="/login"
-                  className="flex items-center justify-center gap-2 hover:bg-white/10 py-2 px-4 rounded-lg transition text-sm font-medium border border-white/20"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <FaSignInAlt /> Sign in
-                </Link>
-                <Link
-                  to="/register"
-                  className="flex items-center justify-center gap-2 bg-white text-blue-600 dark:text-slate-900 hover:bg-blue-50 py-2 px-4 rounded-lg transition text-sm font-medium shadow-sm"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <FaUserPlus /> Get Started
-                </Link>
-              </div>
-            )
-          )}
+          <Link to="/write" className="hover:text-blue-100 dark:hover:text-slate-300 py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>Write</Link>
         </div>
       )}
     </nav>

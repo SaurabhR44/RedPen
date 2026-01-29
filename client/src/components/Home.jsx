@@ -22,7 +22,7 @@ const Home = () => {
                 to="/write"
                 className="bg-white text-blue-600 px-8 py-3 rounded-full font-bold text-lg hover:bg-blue-100 transition duration-300"
               >
-                Start Writing Now
+                Start Writing (No Login Required)
               </Link>
             </div>
             <div className="md:w-1/2">
