@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaPencilAlt, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
