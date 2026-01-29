@@ -6,7 +6,7 @@
   "scripts": {
     "install-all": "npm install && cd client && npm install && cd ../server && npm install",
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "build": "cd client && npm install && npm run build",
+    "build": "cd client && npm install && npm run build && cd .. && rm -rf dist && mv client/dist dist",
     "start": "cd server && npm start"
   },
   "keywords": [],
