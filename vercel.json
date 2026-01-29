@@ -1,10 +1,12 @@
 {
-    "buildCommand": "npm install && npm run build",
-    "outputDirectory": "dist",
-    "framework": "vite",
+    "version": 2,
     "rewrites": [
         {
-            "source": "/((?!assets/|favicon.ico).*)",
+            "source": "/api/(.*)",
+            "destination": "/api"
+        },
+        {
+            "source": "/(.*)",
             "destination": "/index.html"
         }
     ]
