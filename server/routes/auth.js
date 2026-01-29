@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
-const { getDb } = require("../db");
+const User = require("../models/User");
 const { JWT_SECRET } = require("../middleware/auth");
 
 const router = express.Router();
@@ -19,7 +19,7 @@ function validateEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   const { email, password, name } = req.body;
 
   if (!email || !password) {
@@ -35,9 +35,8 @@ router.post("/register", (req, res) => {
     return res.status(400).json({ error: "Password must be at least 6 characters" });
   }
 
-  const db = getDb();
   try {
-    const existing = db.prepare("SELECT id FROM users WHERE email = ?").get(emailTrim);
+    const existing = await User.findOne({ email: emailTrim });
     if (existing) {
       return res.status(409).json({ error: "An account with this email already exists" });
     }
@@ -45,19 +44,23 @@ router.post("/register", (req, res) => {
     const password_hash = bcrypt.hashSync(password, SALT_ROUNDS);
     const nameVal = name ? String(name).trim().slice(0, 100) : null;
 
-    const result = db.prepare(
-      "INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)"
-    ).run(emailTrim, password_hash, nameVal);
+    const newUser = new User({
+      email: emailTrim,
+      password_hash,
+      name: nameVal,
+    });
+
+    await newUser.save();
 
     const token = jwt.sign(
-      { userId: result.lastInsertRowid, email: emailTrim },
+      { userId: newUser._id, email: emailTrim },
       JWT_SECRET,
       { expiresIn: TOKEN_EXPIRY }
     );
 
     res.status(201).json({
       message: "Account created",
-      user: { id: result.lastInsertRowid, email: emailTrim, name: nameVal },
+      user: { id: newUser._id, email: emailTrim, name: nameVal },
       token,
       expiresIn: TOKEN_EXPIRY,
     });
@@ -67,7 +70,7 @@ router.post("/register", (req, res) => {
   }
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -75,12 +78,9 @@ router.post("/login", (req, res) => {
   }
 
   const emailTrim = String(email).trim().toLowerCase();
-  const db = getDb();
 
   try {
-    const user = db.prepare(
-      "SELECT id, email, password_hash, name FROM users WHERE email = ?"
-    ).get(emailTrim);
+    const user = await User.findOne({ email: emailTrim });
 
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
@@ -96,14 +96,14 @@ router.post("/login", (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user._id, email: user.email },
       JWT_SECRET,
       { expiresIn: TOKEN_EXPIRY }
     );
 
     res.json({
       message: "Logged in",
-      user: { id: user.id, email: user.email, name: user.name },
+      user: { id: user._id, email: user.email, name: user.name },
       token,
       expiresIn: TOKEN_EXPIRY,
     });
@@ -131,34 +131,30 @@ router.post("/google", async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: "Google account has no email" });
     }
-    const db = getDb();
-    let user = db.prepare(
-      "SELECT id, email, name FROM users WHERE email = ?"
-    ).get(email);
+
+    let user = await User.findOne({ email });
     if (!user) {
-      const result = db.prepare(
-        "INSERT INTO users (email, password_hash, name) VALUES (?, ?, ?)"
-      ).run(email, OAUTH_PASSWORD_PLACEHOLDER, name);
-      user = {
-        id: result.lastInsertRowid,
+      user = new User({
         email,
+        password_hash: OAUTH_PASSWORD_PLACEHOLDER,
         name,
-      };
+      });
+      await user.save();
     } else {
       if (user.name !== name && name) {
-        db.prepare("UPDATE users SET name = ? WHERE id = ?").run(name, user.id);
         user.name = name;
+        await user.save();
       }
-      user = { id: user.id, email: user.email, name: user.name };
     }
+
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user._id, email: user.email },
       JWT_SECRET,
       { expiresIn: TOKEN_EXPIRY }
     );
     res.json({
       message: "Logged in",
-      user: { id: user.id, email: user.email, name: user.name },
+      user: { id: user._id, email: user.email, name: user.name },
       token,
       expiresIn: TOKEN_EXPIRY,
     });
@@ -168,7 +164,7 @@ router.post("/google", async (req, res) => {
   }
 });
 
-router.get("/me", (req, res) => {
+router.get("/me", async (req, res) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Not authenticated" });
@@ -176,14 +172,11 @@ router.get("/me", (req, res) => {
   const token = authHeader.slice(7);
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    const db = getDb();
-    const user = db.prepare(
-      "SELECT id, email, name, created_at FROM users WHERE id = ?"
-    ).get(payload.userId);
+    const user = await User.findById(payload.userId);
     if (!user) {
       return res.status(401).json({ error: "User not found" });
     }
-    res.json({ user: { id: user.id, email: user.email, name: user.name } });
+    res.json({ user: { id: user._id, email: user.email, name: user.name } });
   } catch {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
