@@ -6,7 +6,7 @@
   "scripts": {
     "install-all": "npm install && cd client && npm install && cd ../server && npm install",
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "build": "cd client && npm install && npm run build && cd .. && (if exist dist rmdir /s /q dist) && mkdir dist && xcopy /e /s client\\dist dist\\",
+    "build": "cd client && npm install && npm run build && cd .. && node -e \"const fs = require('fs'); if (fs.existsSync('dist')) fs.rmSync('dist', { recursive: true, force: true }); fs.renameSync('client/dist', 'dist');\"",
     "start": "cd server && npm start"
   },
   "keywords": [],

@@ -22,8 +22,10 @@ app.use("/api/spellcheck", spellChecker);
 app.use("/api/check", unifiedRouter);
 app.use("/api/tools", writingTools);
 
-app.listen(port, () => {
-  console.log(`RedPen API listening at http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`RedPen API listening at http://localhost:${port}`);
+  });
+}
 
 module.exports = app;
