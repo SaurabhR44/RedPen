@@ -20,10 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "axios": "^1.7.4",
-    "bcryptjs": "^3.0.3",
     "mongoose": "^8.0.0",
-    "google-auth-library": "^10.5.0",
-    "groq-sdk": "^0.37.0",
-    "jsonwebtoken": "^9.0.3"
+    "groq-sdk": "^0.37.0"
   }
 }

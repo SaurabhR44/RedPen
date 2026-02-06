@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaPencilAlt, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
+import { FaPencilAlt, FaMoon, FaSun, FaBars, FaTimes } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
