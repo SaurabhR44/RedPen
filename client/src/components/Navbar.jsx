@@ -5,13 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/", { replace: true });
-  };
 
   return (
     <nav className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-800 dark:to-slate-900 text-white py-3 px-6 shadow-md relative z-50">
@@ -24,9 +18,7 @@ export default function Navbar() {
           <div className="hidden md:flex gap-4">
             <Link to="/" className="hover:text-blue-100 dark:hover:text-slate-300 transition">Home</Link>
             <Link to="/about" className="hover:text-blue-100 dark:hover:text-slate-300 transition">About</Link>
-            {isAuthenticated && (
-              <Link to="/write" className="hover:text-blue-100 dark:hover:text-slate-300 transition font-medium">Write</Link>
-            )}
+            <Link to="/write" className="hover:text-blue-100 dark:hover:text-slate-300 transition font-medium">Write</Link>
           </div>
         </div>
 
