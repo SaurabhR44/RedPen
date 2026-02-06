@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { getDb } = require("./db");
 const analyzeRouter = require("./routes/analyze");
 const grammarCheck = require("./routes/grammarChecker");
 const spellChecker = require("./routes/spellChecker");
@@ -11,7 +10,6 @@ const writingTools = require("./routes/writingTools");
 const app = express();
 const port = process.env.PORT || 8000;
 
-getDb();
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
